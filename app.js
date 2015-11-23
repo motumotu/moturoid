@@ -13,13 +13,16 @@ var bot = new twitter({
     access_token_secret : settings.access_token_secret
 });
 
-randTweet();
+//randTweet();
+console.log("noun " + noun.noun_dic.length);
+console.log("adj  " + adj.adj_dic.length);
 /*
  * 
  */
 setInterval(function() {
     randTweet();              // ランダムにツイート
-}, 1800000);
+}, 1800000);                // 30分毎
+//}, 600000);                   // 10分毎
 
 /*
  * つぶやき
