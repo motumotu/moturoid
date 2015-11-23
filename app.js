@@ -13,7 +13,7 @@ var bot = new twitter({
     access_token_secret : settings.access_token_secret
 });
 
-//randTweet();
+randTweet();
 console.log("noun " + noun.noun_dic.length);
 console.log("adj  " + adj.adj_dic.length);
 /*
@@ -81,19 +81,31 @@ bot.stream('user', function(stream) {
 /*
  * 名詞取得
  */
+var pre_noun_num = -1;
 function getNoun()
 {
     var dic = noun.noun_dic;
-    return dic[Math.floor(Math.random() * dic.length)];
+    var rnd = 0;
+    do {
+        rnd = Math.floor(Math.random() * dic.length);
+    } while (rnd == pre_noun_num);
+    pre_noun_num = rnd;
+    return dic[rnd];
 }
 
 /*
  * 形容詞取得
  */
+var pre_adj_num = -1;
 function getAdjective()
 {
     var dic = adj.adj_dic;
-    return dic[Math.floor(Math.random() * dic.length)];
+    var rnd = 0;
+    do {
+        rnd = Math.floor(Math.random() * dic.length);
+    } while (rnd == pre_adj_num);
+    pre_adj_num = rnd;
+    return dic[rnd];
 }
 
 /*
@@ -126,10 +138,15 @@ function getEmoticon()
 /*
  * ランダムツイート
  */
+var pre_text_num = -1;
 function randTweet()
 {
     var text;
-    var rnd = Math.floor(Math.random() * 29);
+    var rnd;
+    do {
+        rnd = Math.floor(Math.random() * 29);
+    } while (rnd == pre_text_num);
+    pre_text_num = rnd;
     switch (rnd) {
         case 0: text = getNoun() + "って" + getAdjective() + "よねぇ"; break;
         case 1: text = getNoun() + "が" + getAdjective() + "らしいよ！"; break;
