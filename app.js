@@ -13,7 +13,7 @@ var bot = new twitter({
     access_token_secret : settings.access_token_secret
 });
 
-randTweet();
+//randTweet();
 console.log("noun " + noun.noun_dic.length);
 console.log("adj  " + adj.adj_dic.length);
 /*
@@ -30,7 +30,7 @@ setInterval(function() {
 function tweetText(text)
 {
     bot.post('statuses/update', { status: text },  function(error, tweet, response){
-        //if(error) throw error;
+        if(error) throw error;
         console.log("tweet ："+text);
     });
 }
@@ -41,7 +41,7 @@ function tweetText(text)
 function tweetReply(text, reply_id)
 {
     bot.post('statuses/update', { status: text, in_reply_to_status_id : reply_id }, function(error, tweet, response) {
-        //if (error) throw error;
+        if (error) throw error;
         console.log("replay :" + text);
     });
 }
@@ -61,12 +61,15 @@ bot.stream('user', function(stream) {
         var isMention = (data.in_reply_to_user_id !== null);
         var replyId = data.id_str;
         
+        console.log("twUserId " + twUserId);
+        console.log("text " + text);
         // リプライに返信
         if (isMention && twUserId != BOT_ID) {
             tweetReply('@' + twUserId + ' ' + 'それは' + getAdjective() + "ね！", replyId);
         }
+        
         // あいさつ
-        else if (text.match(/おはよ/)) {
+        else if (text.match(/おはよ/) && twUserId != BOT_ID) {
             tweetReply('@' + twUserId + ' ' + 'おはよーo(^-^)o', replyId);
         }
         /*
