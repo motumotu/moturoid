@@ -61,9 +61,9 @@ bot.stream('user', function(stream) {
         var isMention = (data.in_reply_to_user_id !== null);
         var replyId = data.id_str;
         
-        console.log("twUserId " + twUserId);
-        console.log("text " + text);
-        console.log(data);
+        //console.log("twUserId " + twUserId);
+        //console.log("text " + text);
+        //console.log(data);
         
         // リプライに返信
         if (isMention && twUserId != BOT_ID && data.in_reply_to_screen_name == BOT_ID) {
