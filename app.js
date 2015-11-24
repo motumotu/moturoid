@@ -2,8 +2,9 @@ const BOT_ID = "moturoid";
 var twitter = require('twitter');
 var settings = require('./settings');
 require('date-utils');
-var noun = require('./noun_dic');
-var adj = require('./adj_dic');
+var noun = require('./dict/noun_dic');
+var adj = require('./dict/adj_dic');
+var verb = require('./dict/verb_dic');
 //var kuromoji = require("kuromoji");
 
 var bot = new twitter({
@@ -13,9 +14,12 @@ var bot = new twitter({
     access_token_secret : settings.access_token_secret
 });
 
-//randTweet();
+//console.log(createReplyText("dfofkds"));
+randTweet();
 console.log("noun " + noun.noun_dic.length);
 console.log("adj  " + adj.adj_dic.length);
+console.log("verb " + verb.verb_dic.length);
+//console.log(getVerb());
 /*
  * 
  */
@@ -23,7 +27,6 @@ setInterval(function() {
     randTweet();              // ランダムにツイート
 }, 1800000);                // 30分毎
 //}, 600000);                   // 10分毎
-
 /*
  * つぶやき
  */
@@ -57,31 +60,34 @@ bot.stream('user', function(stream) {
         }
         var twUserId = data.user.screen_name;
         var text = data.text;
-        var replayStr = data.text.replace(new RegExp('^@' + BOT_ID + ' '), '');
+        var replyStr = data.text.replace(new RegExp('^@' + BOT_ID + ' '), '');
         var isMention = (data.in_reply_to_user_id !== null);
         var replyId = data.id_str;
         
-        //console.log("twUserId " + twUserId);
-        //console.log("text " + text);
-        //console.log(data);
-        
         // リプライに返信
         if (isMention && twUserId != BOT_ID && data.in_reply_to_screen_name == BOT_ID) {
-            tweetReply('@' + twUserId + ' ' + 'それは' + getAdjective() + "ね！", replyId);
-            //console.log("自分へのリプライ");
+            var replyText = createReplyText(replyStr);
+            tweetReply('@' + twUserId + ' ' + replyText, replyId);
         }
         
         // あいさつ
         else if (text.match(/おはよ/) && twUserId != BOT_ID) {
-            tweetReply('@' + twUserId + ' ' + 'おはよーo(^-^)o', replyId);
+            tweetReply('@' + twUserId + ' ' + 'おはよー' + getEmoticon(), replyId);
+        }
+        else if (text.match("おやすみ|寝る|寝ます") && twUserId != BOT_ID) {
+            tweetReply('@' + twUserId + ' ' + 'おやすみー' + getEmoticon(), replyId);
         }
         
         /*
         kuromoji.builder({ dicPath: "./node_modules/kuromoji/dist/dict/" }).build(function(err, tokenizer) {
             var path = tokenizer.tokenize(text);
-            console.log(path);
+            //console.log(path);
+            for (var i = 0; i < path.length; i++) {
+                console.log(path[i].surface_form + " " + path[i].pos);
+            }
         });
         */
+        
     });
 });
 
@@ -114,6 +120,13 @@ function getAdjective()
     pre_adj_num = rnd;
     return dic[rnd];
 }
+/*
+ * 動詞取得
+ */
+function getVerb()
+{
+    return verb.verb_dic[Math.floor(Math.random() * verb.verb_dic.length)];
+}
 
 /*
  * 状態語
@@ -139,7 +152,9 @@ function getStative()
 function getEmoticon()
 {
     var dic = ["(*>_<*)ﾉ", "(｡･ω･｡)", "(^･ｪ･^)", "ヾ(oゝω･o)ﾉ))", "ヾ(oﾟｘﾟo)ﾉ", "σ(馬ﾟдﾟ鹿)☆",
-               "Σ(oﾟｪﾟ)", "Σ(*★UvO*)艸", "(ﾉ)^ω^(ヾ)", "(喜’v`*)"];
+               "Σ(oﾟｪﾟ)", "Σ(*★UvO*)艸", "(ﾉ)^ω^(ヾ)", "(喜’v`*)", "U^ェ^U", "(-ω-*)",
+               "(._.*)", "(⌒∇⌒*｡)", "(･-･`*", "⊂(･ω･*)∩", "　ﾟωﾟ)", "(ﾟﾛﾟ;", "(*ﾟ□ﾟ)",
+               "(*･д･*)"];
     return dic[Math.floor(Math.random() * dic.length)];
 }
 /*
@@ -151,7 +166,7 @@ function randTweet()
     var text;
     var rnd;
     do {
-        rnd = Math.floor(Math.random() * 29);
+        rnd = Math.floor(Math.random() * 32);
     } while (rnd == pre_text_num);
     pre_text_num = rnd;
     switch (rnd) {
@@ -169,10 +184,10 @@ function randTweet()
         case 11: text = "たまには" + getNoun() + "しないとね！"; break;
         case 12: text = "今日は" + getAdjective() + "気分だよ！"; break;
         case 13: text = getAdjective() + getNoun() + "ってどう思う？"; break;
-        case 14: text = "今から" + getNoun() + "するよ！"; break;
+        case 14: text = "今から" + getNoun() + "を" + getVerb() + "よ！"; break;
         case 15: text = getNoun() + "を見たよ！"; break;
         case 16: text = getNoun() + "よかったよ！"; break;
-        case 17: text = getAdjective() + "よぉ"; break;
+        case 17: text = getAdjective() + "よぉ" + getEmoticon(); break;
         case 18: text = getNoun() + "と" + getNoun() + "は" + getNoun() + "なんだよ！"; break;
         case 19: text = getNoun() + "の特集を見たよ！"; break;
         case 20: text = getAdjective() + getNoun() + "と" + getAdjective() + getNoun() + "どっちが好き？"; break;
@@ -184,7 +199,49 @@ function randTweet()
         case 26: text = getStative() + "してるよ！"; break;
         case 27: text = getNoun() + "って" + getAdjective() + "けど" + getAdjective() + "んだよ！"; break;
         case 28: text = getNoun() + "が欲しいな♪"; break;
+        case 29: text = getNoun() + "を" + getVerb() + "よ！" + getAdjective(); break;
+        case 30: text = getNoun() + "を" + getVerb() + "のが流行ってるらしいよ！" + getAdjective(); break;
+        case 31: text = "ご注文は" + getNoun() + "ですか？"; break;
+        
     }
     //console.log(text);
     tweetText(text);
+}
+
+/*
+ * リプライ用のテキスト生成
+ */
+function createReplyText(text)
+{
+    //---- 呼びかけ
+    if (text.match("^あの$|^ねえ$|^よう$|^おい$|^やあ$")) {
+        var arr = ["どうしました？", "どうしたの？", "お呼びですか？", "はい", "んー？"];
+        return arr[Math.floor(Math.random() * arr.length)] + getEmoticon();
+    }
+    //---- 同意
+    if (text.match("ね？$|だね$|だよね$|ない？$|ですか？$|かな？")) {
+        var arr = ["うん！", "違うよ！", "そうなの？", "そうかも！", "だよねー"];
+        return arr[Math.floor(Math.random() * arr.length)] + getEmoticon();
+    }
+    //---- 質問
+    if (text.match("好き")) {
+        return getNoun() + "が好きだよ！";
+    }
+    if (text.match("元気|体調|気分")) {
+        var arr = ["元気だよ！", "いい感じだよ！", "普通かな", "眠いよ～"];
+        return arr[Math.floor(Math.random() * arr.length)] + getEmoticon();
+    }
+    //---- 時間
+    if (text.match("何時|時間")) {
+        var dt = new Date();
+        return "今は" + dt.toFormat("HH24時MI分") + "だよ！";
+    }
+    //---- こんばんは
+    if (text.match("こんばんは")) {
+        var arr = ["こばゎ ヾ(*´□｀)ﾉﾞ ぁああん~☆", "((o´ω｀o)ﾉ.｡ﾟ:;｡+･;ｺﾝﾊﾞﾝﾜ!! ｡.:*･ﾟ",
+                   "εミ(*b´З`)bｺﾝﾊﾞﾝﾜｰ♪", "(*･З･)ﾉ(*-∀-)ﾉこんばんわぁ♪"];
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+    var arr = [getAdjective() + "ね！", getNoun() + "を" + getVerb() + "のがいいよ！"];
+    return arr[Math.floor(Math.random() * arr.length)];    
 }
