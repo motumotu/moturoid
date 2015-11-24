@@ -63,15 +63,19 @@ bot.stream('user', function(stream) {
         
         console.log("twUserId " + twUserId);
         console.log("text " + text);
+        console.log(data);
+        
         // リプライに返信
-        if (isMention && twUserId != BOT_ID) {
+        if (isMention && twUserId != BOT_ID && data.in_reply_to_screen_name == BOT_ID) {
             tweetReply('@' + twUserId + ' ' + 'それは' + getAdjective() + "ね！", replyId);
+            //console.log("自分へのリプライ");
         }
         
         // あいさつ
         else if (text.match(/おはよ/) && twUserId != BOT_ID) {
             tweetReply('@' + twUserId + ' ' + 'おはよーo(^-^)o', replyId);
         }
+        
         /*
         kuromoji.builder({ dicPath: "./node_modules/kuromoji/dist/dict/" }).build(function(err, tokenizer) {
             var path = tokenizer.tokenize(text);
