@@ -15,7 +15,7 @@ var bot = new twitter({
 });
 
 //console.log(createReplyText("dfofkds"));
-randTweet();
+//randTweet();
 console.log("noun " + noun.noun_dic.length);
 console.log("adj  " + adj.adj_dic.length);
 console.log("verb " + verb.verb_dic.length);
@@ -76,6 +76,9 @@ bot.stream('user', function(stream) {
         }
         else if (text.match("おやすみ|寝る|寝ます") && twUserId != BOT_ID) {
             tweetReply('@' + twUserId + ' ' + 'おやすみー' + getEmoticon(), replyId);
+        }
+        else if (text.match("もつろいど|モツロイド") && twUserId != BOT_ID) {
+            tweetReply('@' + twUserId + ' ' + 'お呼びですか？' + getEmoticon(), replyId);
         }
         
         /*
@@ -199,8 +202,8 @@ function randTweet()
         case 26: text = getStative() + "してるよ！"; break;
         case 27: text = getNoun() + "って" + getAdjective() + "けど" + getAdjective() + "んだよ！"; break;
         case 28: text = getNoun() + "が欲しいな♪"; break;
-        case 29: text = getNoun() + "を" + getVerb() + "よ！" + getAdjective(); break;
-        case 30: text = getNoun() + "を" + getVerb() + "のが流行ってるらしいよ！" + getAdjective(); break;
+        case 29: text = getNoun() + "を" + getVerb() + "よ！" + getEmoticon(); break;
+        case 30: text = getNoun() + "を" + getVerb() + "のが流行ってるらしいよ！" + getEmoticon(); break;
         case 31: text = "ご注文は" + getNoun() + "ですか？"; break;
         
     }
@@ -214,7 +217,7 @@ function randTweet()
 function createReplyText(text)
 {
     //---- 呼びかけ
-    if (text.match("^あの$|^ねえ$|^よう$|^おい$|^やあ$")) {
+    if (text.match("^あの$|^ねえ$|^よう$|^おい$|^やあ$|^もつろいど$|^モツロイド$")) {
         var arr = ["どうしました？", "どうしたの？", "お呼びですか？", "はい", "んー？"];
         return arr[Math.floor(Math.random() * arr.length)] + getEmoticon();
     }
