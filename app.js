@@ -206,7 +206,6 @@ function randTweet()
         case 29: text = getNoun() + "を" + getVerb() + "よ！" + getEmoticon(); break;
         case 30: text = getNoun() + "を" + getVerb() + "のが流行ってるらしいよ！" + getEmoticon(); break;
         case 31: text = "ご注文は" + getNoun() + "ですか？"; break;
-        
     }
     //console.log(text);
     tweetText(text);
@@ -245,6 +244,10 @@ function createReplyText(text)
         var arr = ["こばゎ ヾ(*´□｀)ﾉﾞ ぁああん~☆", "((o´ω｀o)ﾉ.｡ﾟ:;｡+･;ｺﾝﾊﾞﾝﾜ!! ｡.:*･ﾟ",
                    "εミ(*b´З`)bｺﾝﾊﾞﾝﾜｰ♪", "(*･З･)ﾉ(*-∀-)ﾉこんばんわぁ♪"];
         return arr[Math.floor(Math.random() * arr.length)];
+    }
+    //---- 謝る
+    if (text.match("うざ|うるさ|うぜ|うるせ|は？|だまれ")) {
+        return "ごめんなさい！！m(｡_｡；))m";
     }
     var arr = [getAdjective() + "ね！", getNoun() + "を" + getVerb() + "のがいいよ！"];
     return arr[Math.floor(Math.random() * arr.length)];    
