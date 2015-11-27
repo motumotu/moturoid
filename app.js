@@ -206,6 +206,7 @@ function randTweet()
         case 29: text = getNoun() + "を" + getVerb() + "よ！" + getEmoticon(); break;
         case 30: text = getNoun() + "を" + getVerb() + "のが流行ってるらしいよ！" + getEmoticon(); break;
         case 31: text = "ご注文は" + getNoun() + "ですか？"; break;
+        case 32: text = "わたし何もあげられるものないから" + getNoun() + "を" + getVerb() + "よ！"; break;
     }
     //console.log(text);
     tweetText(text);
